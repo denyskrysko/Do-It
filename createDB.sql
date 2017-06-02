@@ -44,3 +44,32 @@ CREATE TABLE Review(
   rating INT(10)                  <--figure out
   description VARCHAR(250)
 )
+
+CREATE TABLE Order(
+ id BIGINT(20) NOT NULL IDENTITY PRIMARY KEY,
+ orderDate DATE,  --> decided to change to "orderDate" cause DATE DATE looks strange
+ startDate DATE,
+ endDate DATE,
+ location VARCHAR(50),
+ employer_id BIGINT(20),
+ employee_id BIGINT(20),
+ status_id BIGINT(20),
+ employeeReview_id BIGINT(20),
+ employerReview_id BIGINT(20),
+ FOREIGN KEY (employee_id) REFERENCES Employee(id) ON DELETE CASCADE,  --> figure out (couple cascades at the same time)
+ FOREIGN KEY (employer_id) REFERENCES Employer(id) ON DELETE CASCADE,
+ FOREIGN KEY (status_id) REFERENCES Status(id) ON DELETE CASCADE,
+ FOREIGN KEY (employeeReview_id) REFERENCES Review(id) ON DELETE CASCADE,
+ FOREIGN KEY (employerReview_id) REFERENCES Review(id) ON DELETE CASCADE
+)
+
+CREATE TABLE OrderResponse (
+id BIGINT(20) NOT NULL IDENTITY PRIMARY KEY,
+OrderResponseDate DATE, --> the same as in the previous
+message VARCHAR(250),
+priceOffer DECIMAL(13,4), --> figure out
+order_id BIGINT(20),
+employee_id BIGINT(20),
+FOREIGN KEY (order_id) REFERENCES Order(id) ON DELETE CASCADE,  --> figure out (couple cascades at the same time)
+FOREIGN KEY (employee_id) REFERENCES Employee(id) ON DELETE CASCADE  --> figure out (couple cascades at the same time)
+)
