@@ -1,75 +1,75 @@
+CREATE DATABASE Do_it;
+
+USE DATABASE Do_it;
 
 CREATE TABLE Person(
-  id BIGINT(20) NOT NULL IDENTITY PRIMARY KEY,
+  id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   firstName VARCHAR(100) NOT NULL,
   lastName VARCHAR(100) NOT NULL,
-  dateOfBirth DATE,           <-- ???
-  registrationDate DATE,      <-- ???
+  dateOfBirth DATETIME,
+  registrationDate DATETIME,
   phone VARCHAR(30) NOT NULL,
   email VARCHAR(50) NOT NULL,
   password VARCHAR(250) NOT NULL,
   address VARCHAR(250) NOT NULL,
-  city VARCHAR(100) NOT NULL,
-  postalCode VARCHAR(100) NOT NULL,     <-- filter?
+  city VARCHAR(50) NOT NULL,
+  postalCode VARCHAR(10) NOT NULL,
   province VARCHAR(10) NOT NULL,
-  profilePhoto IMAGE,
-  rating INT(10)
-)
+  profilePhoto LONGBLOB
+);
 
 CREATE TABLE Employee(
-  id BIGINT(20) NOT NULL IDENTITY PRIMARY KEY,
-  person_id BIGINT(20) NOT NULL
-  rating INT(10),                 <-- figure out
-    FOREIGN KEY (person_id)
-    REFERENCES Person (id)
-    ON DELETE CASCADE
-)
+  id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  person_id BIGINT(20) NOT NULL,
+  averageRating DECIMAL(2,1),
+  FOREIGN KEY (person_id)
+  REFERENCES Person (id)
+);
 
 CREATE TABLE Employer(
-  id BIGINT(20) NOT NULL IDENTITY PRIMARY KEY,
-  person_id BIGINT(20) NOT NULL
-  rating INT(10),                 <-- figure out
-    FOREIGN KEY (person_id)
-    REFERENCES Person (id)
-    ON DELETE CASCADE
-)
+  id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  person_id BIGINT(20) NOT NULL,
+  averageRating INT(10),
+  FOREIGN KEY (person_id)
+  REFERENCES Person (id)
+);
 
-CREATE TABLE STATUS(
-  id BIGINT(20) NOT NULL IDENTITY PRIMARY KEY,
+CREATE TABLE Status(
+  id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(50) NOT NULL
-)
+);
 
 CREATE TABLE Review(
-  id BIGINT(20) NOT NULL IDENTITY PRIMARY KEY,
-  rating INT(10)                  <--figure out
+  id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  rating DECIMAL(2,1),
   description VARCHAR(250)
-)
+);
 
-CREATE TABLE Order(
- id BIGINT(20) NOT NULL IDENTITY PRIMARY KEY,
- orderDate DATE,  --> decided to change to "orderDate" cause DATE DATE looks strange
- startDate DATE,
- endDate DATE,
- location VARCHAR(50),
- employer_id BIGINT(20),
- employee_id BIGINT(20),
- status_id BIGINT(20),
- employeeReview_id BIGINT(20),
- employerReview_id BIGINT(20),
- FOREIGN KEY (employee_id) REFERENCES Employee(id) ON DELETE CASCADE,  --> figure out (couple cascades at the same time)
- FOREIGN KEY (employer_id) REFERENCES Employer(id) ON DELETE CASCADE,
- FOREIGN KEY (status_id) REFERENCES Status(id) ON DELETE CASCADE,
- FOREIGN KEY (employeeReview_id) REFERENCES Review(id) ON DELETE CASCADE,
- FOREIGN KEY (employerReview_id) REFERENCES Review(id) ON DELETE CASCADE
-)
+CREATE TABLE ServiceOrder(
+  id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  orderDate DATETIME NOT NULL,
+  startDate DATETIME NOT NULL,
+  endDate DATETIME NOT NULL,
+  location VARCHAR(250) NOT NULL,
+  employer_id BIGINT(20) NOT NULL,
+  employee_id BIGINT(20),
+  status_id BIGINT(20) NOT NULL,
+  employeeReview_id BIGINT(20),
+  employerReview_id BIGINT(20),
+  FOREIGN KEY (employee_id) REFERENCES Employee(id),
+  FOREIGN KEY (employer_id) REFERENCES Employer(id),
+  FOREIGN KEY (status_id) REFERENCES Status(id),
+  FOREIGN KEY (employeeReview_id) REFERENCES Review(id),
+  FOREIGN KEY (employerReview_id) REFERENCES Review(id)
+);
 
 CREATE TABLE OrderResponse (
-id BIGINT(20) NOT NULL IDENTITY PRIMARY KEY,
-OrderResponseDate DATE, --> the same as in the previous
-message VARCHAR(250),
-priceOffer DECIMAL(13,4), --> figure out
-order_id BIGINT(20),
-employee_id BIGINT(20),
-FOREIGN KEY (order_id) REFERENCES Order(id) ON DELETE CASCADE,  --> figure out (couple cascades at the same time)
-FOREIGN KEY (employee_id) REFERENCES Employee(id) ON DELETE CASCADE  --> figure out (couple cascades at the same time)
-)
+  id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  OrderResponseDate DATETIME NOT NULL,
+  message VARCHAR(250) NOT NULL,
+  priceOffer DECIMAL(8,2),
+  order_id BIGINT(20),
+  employee_id BIGINT(20),
+  FOREIGN KEY (order_id) REFERENCES ServiceOrder(id),
+  FOREIGN KEY (employee_id) REFERENCES Employee(id)
+);
